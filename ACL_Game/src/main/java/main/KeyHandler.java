@@ -17,16 +17,16 @@ public class KeyHandler implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int code = e.getKeyCode();
 		
-		if (code == KeyEvent.VK_Z) {
+		if (code == KeyEvent.VK_Z || code == KeyEvent.VK_UP){
 			upPressed  = true ;
 		}
-		if (code == KeyEvent.VK_S) {
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 			downPressed  = true ;
 		}
-		if (code == KeyEvent.VK_Q) {
+		if (code == KeyEvent.VK_Q || code == KeyEvent.VK_LEFT) {
 			leftPressed  = true ;
 			}
-		if (code == KeyEvent.VK_D) {
+		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 			rightPressed  = true ;
 			}
 		
@@ -35,18 +35,19 @@ public class KeyHandler implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();
-		if (code == KeyEvent.VK_Z) {
+		if (code == KeyEvent.VK_Z || code == KeyEvent.VK_UP) {
 			upPressed  = false ;
 		}
-		if (code == KeyEvent.VK_S) {
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 			downPressed  = false ;
 		}
-		if (code == KeyEvent.VK_Q) {
+		if (code == KeyEvent.VK_Q || code == KeyEvent.VK_LEFT) {
 			leftPressed  = false ;
 			}
-		if (code == KeyEvent.VK_D) {
+		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 			rightPressed  = false ;
 			}
 	}
+
 
 }

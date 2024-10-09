@@ -2,9 +2,9 @@
 
 ## Objectifs
 
-- [x]  Ajout de monstres (Emna)
-- [x]  Ajout de fantômes (Hedi)
-- [x]  Amélioration du Labyrinthe (Amina)
-- [x]  Ajout de cases spéciales dans le Labyrinthe (Rayen)
-- [x]  Ajout d'autres fonctionnalités (Tous)
+- []  Ajout de monstres (Emna)
+- []  Ajout de fantômes (Hedi)
+- []  Amélioration du Labyrinthe (Amina)
+- []  Ajout de cases spéciales dans le Labyrinthe (Rayen)
+- []  Ajout d'autres fonctionnalités (Tous)
 

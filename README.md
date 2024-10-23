@@ -1,17 +1,19 @@
-# Balade dans un labyrinthe
+- # Balade dans un labyrinthe
 
-L’objectif de ce projet est la réalisation d’un jeu mono-utilisateur avec une interface 
-graphique. Le jeu consiste à déplacer un personnage dans un labyrinthe dans le but de 
-découvrir un trésor. Dans le labyrinthe il peut y avoir des monstres de différents types qui 
-essayent d’attaquer le personnage.
+  L’objectif de ce projet est la réalisation d’un jeu mono-utilisateur avec une interface 
+  graphique. Le jeu consiste à déplacer un personnage dans un labyrinthe dans le but de 
+  découvrir un trésor. Dans le labyrinthe, il peut y avoir des monstres de différents types qui 
+  essayent d’attaquer le personnage.
 
-![V1](./Documents/images/V1.PNG)
+  ![V1](./Documents/images/V1.PNG)
 
+  ## Pour exécuter le jeu : 
 
+  1. Ouvrez votre terminal.
+  2. Naviguez jusqu'au répertoire de votre projet où se trouve le fichier `pom.xml`.
+  3. Exécutez la commande suivante pour nettoyer et empaqueter le projet :
 
-## Pour éxecuter le jeu : 
-
-- Maven clean
-- Maven generate sources 
-- Maven install
-- Run the app
+     ```# Balade dans un labyrinthe
+     mvn clean package
+     java -jar target/ACL_Game-0.0.1-SNAPSHOT.jar
+     

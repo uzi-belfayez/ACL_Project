@@ -9,11 +9,14 @@
 
   ## Pour exécuter le jeu : 
 
-  1. Ouvrez votre terminal.
-  2. Naviguez jusqu'au répertoire de votre projet où se trouve le fichier `pom.xml`.
-  3. Exécutez la commande suivante pour nettoyer et empaqueter le projet :
+  - Ouvrez votre terminal.
 
-     ```# Balade dans un labyrinthe
-     mvn clean package
-     java -jar target/ACL_Game-0.0.1-SNAPSHOT.jar
-     
+  - Naviguez jusqu'au répertoire de votre projet où se trouve le fichier `pom.xml`.
+
+  - Exécutez la commande suivante pour nettoyer et empaqueter le projet :
+
+  ```bash
+  mvn clean package
+  java -jar target/ACL_Game-0.0.1-SNAPSHOT.jar
+  ```
+

@@ -34,7 +34,7 @@ public class TileManager {
 			tile[1].collision = true ;
 			
 			tile[2] = new Tile();
-			tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
+			tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/cobble_blood6.png"));
 			
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -38,9 +38,9 @@ public class Ghost extends Entity {
     public void getGhostImage() {
         try {
             left1 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/ghost/ghostright2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/ghost/ghostright1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/ghost/ghostright2.png"));
+            left2 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright2.png"));
+            right1 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright1.png"));
+            right2 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -18,4 +18,19 @@ public class Entity {
 	
 	public Rectangle solidArea;
 	public boolean collisionOn = false ;
+	//CHARACTER STATUS
+	public int maxLife;
+	public int life;
+	 public void reduceLife() {
+	        if (life > 0) {
+	            life--;
+	        }
+	        if (life <= 0) {
+	            // Game over or restart logic
+	            System.out.println("Game Over!");
+	        }
+	    }
+	
+	
+	
 }

@@ -45,6 +45,9 @@ public class Player extends Entity{
 		worldY = gp.tileSize*23 ;
 		speed = 4 ;
 		direction = "down";
+		// PLAYER STATUS
+		maxLife = 6;
+		life = maxLife;
 		
 	}
 	

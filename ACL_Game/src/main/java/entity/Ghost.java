@@ -65,6 +65,16 @@ public class Ghost extends Entity {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             spriteCounter = 0;
         }
+        
+        if (gp.player.solidArea.intersects(this.getCollisionArea())) {
+            gp.player.reduceLife(); 
+        }
+    }
+
+    public Rectangle getCollisionArea() {
+        Rectangle collisionArea = new Rectangle(worldX + solidArea.x, worldY + solidArea.y,
+                                                solidArea.width, solidArea.height);
+        return collisionArea;
     }
 
     public void draw(Graphics2D g2) {

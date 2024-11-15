@@ -1,6 +1,7 @@
 package main;
 
 import entity.Entity;
+import entity.Ghost;
 
 public class CollisionChecker {
 	
@@ -59,7 +60,6 @@ public class CollisionChecker {
 		}
 		
 	}
-	
 	public int checkObject(Entity entity, boolean player) {
 		
 		int index = 999;

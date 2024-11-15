@@ -1,5 +1,4 @@
 package tile;
-
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +8,9 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.UtilityTool;
 
+import java.awt.image.BufferedImage;
 public class TileManager {
 	GamePanel gp;
 	public Tile[] tile;
@@ -28,7 +29,6 @@ public class TileManager {
 		try {
 			tile[0] = new Tile();
 			tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
-			
 			tile[1] = new Tile();
 			tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
 			tile[1].collision = true ;
@@ -40,6 +40,20 @@ public class TileManager {
 			e.printStackTrace();
 		}
 	}
+	
+	public void setup(int index, String imagePath, boolean collision) {
+		UtilityTool uTool = new UtilityTool();
+		
+		try {
+			tile[index] = new Tile();
+			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/"+imagePath+".png"));
+			tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+			tile[index].collision =  collision;
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+	}
+		
 	
 	void loadMap(String filePath ) {
 		try {

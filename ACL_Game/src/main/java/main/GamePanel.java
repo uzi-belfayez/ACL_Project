@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.util.Random;
 
 import javax.swing.JPanel;
-
 import entity.Ghost;
 import entity.Monstre;
 import entity.Player;
@@ -16,7 +15,8 @@ import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    // SCREEN SETTINGS
+	private static final long serialVersionUID = 1L;
+	// SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile 
     final int scale = 3; // 16*3 = 48 pixel
     
@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
     public UI ui = new UI(this);
     public Player player = new Player(this, keyH);
     public SuperObject obj[] = new SuperObject[10];
+    public EventHandler eHandler = new EventHandler(this);
     
     public Monstre[] monsters = new Monstre[10]; // Array for multiple monsters
     public Ghost[] ghosts = new Ghost[10]; // Array for multiple ghosts

@@ -9,6 +9,7 @@ main\UtilityTool.class
 tile\Tile.class
 entity\Monstre.class
 main\AssetSetter.class
+object\OBJ_CLOAK.class
 object\OBJ_Heart.class
 tile\TileManager.class
 entity\Entity.class

@@ -5,14 +5,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Random;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import entity.Ghost;
 import entity.Monstre;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
-
+import entity.Fireball;
 public class GamePanel extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenHeight = tileSize * maxScreenRow; // 576 pixel
 
     int FPS = 60;
-    
+    public List<Fireball> fireballs = new ArrayList<>();
     // WORLD SETTINGS
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
@@ -121,7 +122,9 @@ public class GamePanel extends JPanel implements Runnable {
                 monster.update();
             }
         }
-
+        for (int i = 0; i < fireballs.size(); i++) {
+            fireballs.get(i).update();
+        }
         // Update each ghost
         for (Ghost ghost : ghosts) {
             if (ghost != null) {
@@ -145,6 +148,9 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2); // Draw player
+        for (Fireball fireball : fireballs) {
+            fireball.draw(g2);
+        }
 
         // Draw each monster
         for (Monstre monster : monsters) {

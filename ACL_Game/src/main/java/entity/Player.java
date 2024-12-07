@@ -21,8 +21,20 @@ public class Player extends Entity {
     // Sprite sheets and frames for all directions
     private BufferedImage rightSpriteSheet, leftSpriteSheet, upSpriteSheet, downSpriteSheet;
     private BufferedImage[] rightFrames, leftFrames, upFrames, downFrames;
+
+    // Attack sprite sheets and frames for all directions
+    private BufferedImage rightAttackSpriteSheet, leftAttackSpriteSheet, upAttackSpriteSheet, downAttackSpriteSheet;
+    private BufferedImage[] rightAttackFrames, leftAttackFrames, upAttackFrames, downAttackFrames;
+    
+ // Fireball images for each direction
+    private BufferedImage fireballUpImage, fireballDownImage, fireballLeftImage, fireballRightImage;
+
+
+    
     private int frameIndex = 0; // Current frame index
     private int frameCounter = 0; // Controls the frame rate
+
+    private boolean isAttacking = false;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -51,17 +63,38 @@ public class Player extends Entity {
 
     public void loadSpriteSheets() {
         try {
-            // Load sprite sheets for all directions
+            // Load movement sprite sheets
             rightSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/RIGHT.png"));
             leftSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/LEFT.png"));
             upSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/BACK.png"));
             downSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/FRONT.png"));
 
-            // Extract frames from each sprite sheet
+            // Load attack sprite sheets for all directions
+            rightAttackSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK_RIGHT.png"));
+            leftAttackSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK_LEFT.png"));
+            upAttackSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK_UP.png"));
+            downAttackSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK_DOWN.png"));
+            
+         // Load fireball images
+            fireballUpImage = ImageIO.read(getClass().getResourceAsStream("/Player/0.png"));
+            fireballDownImage = ImageIO.read(getClass().getResourceAsStream("/Player/30.png"));
+            fireballLeftImage = ImageIO.read(getClass().getResourceAsStream("/Player/29.png"));
+            fireballRightImage = ImageIO.read(getClass().getResourceAsStream("/Player/28.png"));
+
+
+
+           
+            // Extract movement frames
             rightFrames = extractFrames(rightSpriteSheet, 15);
             leftFrames = extractFrames(leftSpriteSheet, 15);
             upFrames = extractFrames(upSpriteSheet, 15);
             downFrames = extractFrames(downSpriteSheet, 15);
+
+            // Extract attack frames
+            rightAttackFrames = extractFrames(rightAttackSpriteSheet, 15);
+            leftAttackFrames = extractFrames(leftAttackSpriteSheet, 15);
+            upAttackFrames = extractFrames(upAttackSpriteSheet, 15);
+            downAttackFrames = extractFrames(downAttackSpriteSheet, 15);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,8 +102,7 @@ public class Player extends Entity {
     }
 
     private BufferedImage[] extractFrames(BufferedImage spriteSheet, int frameCount) {
-        // Extracts frames from a sprite sheet
-        int frameWidth = spriteSheet.getWidth() / frameCount; // Adjust to 15 frames
+        int frameWidth = spriteSheet.getWidth() / frameCount;
         int frameHeight = spriteSheet.getHeight();
         BufferedImage[] frames = new BufferedImage[frameCount];
         for (int i = 0; i < frameCount; i++) {
@@ -79,8 +111,67 @@ public class Player extends Entity {
         return frames;
     }
 
-
     public void update() {
+        // Fireball firing logic
+        if (keyH.firePressed && !isAttacking) {
+            isAttacking = true;
+            frameIndex = 0;
+            frameCounter = 0;
+
+            // Calculate fireball starting position
+            int fireballX = worldX;
+            int fireballY = worldY;
+            BufferedImage fireballImage = null;
+
+            switch (direction) {
+                case "up":
+                    fireballY -= gp.tileSize;
+                    fireballImage = fireballUpImage;
+                    break;
+                case "down":
+                    fireballY += gp.tileSize;
+                    fireballImage = fireballDownImage;
+                    break;
+                case "left":
+                    fireballX -= gp.tileSize;
+                    fireballImage = fireballLeftImage;
+                    break;
+                case "right":
+                    fireballX += gp.tileSize;
+                    fireballImage = fireballRightImage;
+                    break;
+            }
+
+            // Create and add fireball to GamePanel's fireballs list
+            Fireball fireball = new Fireball(gp, fireballX, fireballY, direction, fireballImage);
+            gp.fireballs.add(fireball);
+            return; // Exit the update method after firing a fireball
+        }
+
+        // Attack animation logic
+        if (keyH.attackPressed && !isAttacking) {
+            isAttacking = true;
+            frameIndex = 0;
+            frameCounter = 0;
+            return;
+        }
+
+        if (isAttacking) {
+            // Handle attack animation
+            frameCounter++;
+            if (frameCounter > 0) { // Adjust for smoother attack animation
+                frameIndex++;
+                frameCounter = 0;
+            }
+
+            if (frameIndex >= 15) { // End attack after one animation cycle
+                isAttacking = false;
+                frameIndex = 0;
+            }
+            return; // Exit the update method during attack animation
+        }
+
+        // Movement logic
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             if (keyH.upPressed) {
                 direction = "up";
@@ -90,14 +181,13 @@ public class Player extends Entity {
                 direction = "left";
             } else if (keyH.rightPressed) {
                 direction = "right";
-                
             }
-           
+
             collisionOn = false;
             gp.cChecker.checkTile(this);
 
             int objIndex = gp.cChecker.checkObject(this, true);
-            pickUpObject(objIndex);
+            //pickUpObject(objIndex);
 
             if (!collisionOn) {
                 switch (direction) {
@@ -116,71 +206,54 @@ public class Player extends Entity {
                 }
             }
 
-            // Handle animation frame updates
             frameCounter++;
-            if (frameCounter > 3) { // Adjust for smoother/faster animation
-                frameIndex = (frameIndex + 1) % 15; // Loop through 15 frames
+            if (frameCounter > 2) {
+                frameIndex = (frameIndex + 1) % 15; // Loop through 15 movement frames
                 frameCounter = 0;
             }
         }
     }
-
-
-    public void pickUpObject(int i) {
-        if (i != 999) {
-            String objectName = gp.obj[i].name;
-            switch (objectName) {
-                case "Key":
-                    gp.obj[i] = null;
-                    break;
-                case "Chest":
-                    gp.obj[i] = null;
-                    break;
-                case "Door":
-                    break;
-                case "Boots":
-                    speed += 2; // Increase speed
-                    gp.obj[i] = null; // Remove the object
-                    gp.ui.showMessage("Movement Speed Buff !");
-                    new java.util.Timer().schedule(new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            speed -= 2; // Reset speed after 3 seconds
-                        }
-                    }, 3000); // 3000 milliseconds = 3 seconds
-                    break;
-            }
-        }
-    }
-
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
-        // Select the correct frame based on direction
-        switch (direction) {
-            case "right":
-                image = rightFrames[frameIndex];
-                break;
-            case "left":
-                image = leftFrames[frameIndex];
-                break;
-            case "up":
-                image = upFrames[frameIndex];
-                break;
-            case "down":
-                image = downFrames[frameIndex];
-                break;
+        if (isAttacking) {
+            switch (direction) {
+                case "right":
+                    image = rightAttackFrames[frameIndex];
+                    break;
+                case "left":
+                    image = leftAttackFrames[frameIndex];
+                    break;
+                case "up":
+                    image = upAttackFrames[frameIndex];
+                    break;
+                case "down":
+                    image = downAttackFrames[frameIndex];
+                    break;
+            }
+        } else {
+            switch (direction) {
+                case "right":
+                    image = rightFrames[frameIndex];
+                    break;
+                case "left":
+                    image = leftFrames[frameIndex];
+                    break;
+                case "up":
+                    image = upFrames[frameIndex];
+                    break;
+                case "down":
+                    image = downFrames[frameIndex];
+                    break;
+            }
         }
 
-        // Scale the character (e.g., 2x size)
-        int scaledWidth = gp.tileSize * 2;  // Increase width
-        int scaledHeight = gp.tileSize * 2 ; // Increase height
+        int scaledWidth = gp.tileSize * 2;
+        int scaledHeight = gp.tileSize * 2;
 
-        // Center the larger character properly
         int drawX = screenX - (scaledWidth - gp.tileSize) / 2;
         int drawY = screenY - (scaledHeight - gp.tileSize) / 2;
 
         g2.drawImage(image, drawX, drawY, scaledWidth, scaledHeight, null);
     }
-
 }

@@ -4,23 +4,26 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import javax.swing.JPanel;
+
+import entity.Fireball;
 import entity.Ghost;
 import entity.Monstre;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
-import entity.Fireball;
+
 public class GamePanel extends JPanel implements Runnable {
 
-	private static final long serialVersionUID = 1L;
-	// SCREEN SETTINGS
-    final int originalTileSize = 16; // 16x16 tile 
+    private static final long serialVersionUID = 1L;
+    // SCREEN SETTINGS
+    final int originalTileSize = 16; // 16x16 tile
     final int scale = 3; // 16*3 = 48 pixel
-    
+
     public final int tileSize = originalTileSize * scale;
     public final int maxScreenCol = 12; // Horizontal
     public final int maxScreenRow = 12; // Vertical
@@ -34,7 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int maxWorldRow = 50;
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
-    
+
     public TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
@@ -44,7 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH);
     public SuperObject obj[] = new SuperObject[10];
     public EventHandler eHandler = new EventHandler(this);
-    
+
     public Monstre[] monsters = new Monstre[10]; // Array for multiple monsters
     public Ghost[] ghosts = new Ghost[10]; // Array for multiple ghosts
 
@@ -91,14 +94,14 @@ public class GamePanel extends JPanel implements Runnable {
         long currentTime;
         long timer = 0;
         int drawCount = 0;
-        
+
         while (gameThread != null) {
             currentTime = System.nanoTime();
-            
+
             delta += (currentTime - lastTime) / drawInterval;
             timer += (currentTime - lastTime);
             lastTime = currentTime;
-            
+
             if (delta >= 1) {
                 update();
                 repaint();
@@ -116,19 +119,50 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         player.update();
 
+        // Check if the player collects keys
+        checkKeyCollision();
+
         // Update each monster
         for (Monstre monster : monsters) {
             if (monster != null) {
                 monster.update();
             }
         }
+
+        // Update fireballs
         for (int i = 0; i < fireballs.size(); i++) {
             fireballs.get(i).update();
         }
+
         // Update each ghost
         for (Ghost ghost : ghosts) {
             if (ghost != null) {
                 ghost.update();
+            }
+        }
+    }
+
+    // Method to check collisions with keys
+    public void checkKeyCollision() {
+        for (int i = 0; i < obj.length; i++) {
+            if (obj[i] != null && obj[i].name.equals("Key")) { // Assuming keys are named "Key"
+                // Calculate player and object boundaries
+                int playerLeft = player.worldX;
+                int playerRight = player.worldX + player.solidArea.width;
+                int playerTop = player.worldY;
+                int playerBottom = player.worldY + player.solidArea.height;
+
+                int objLeft = obj[i].worldX;
+                int objRight = obj[i].worldX + tileSize;
+                int objTop = obj[i].worldY;
+                int objBottom = obj[i].worldY + tileSize;
+
+                // Check for overlap (collision)
+                if (playerRight > objLeft && playerLeft < objRight && playerBottom > objTop && playerTop < objBottom) {
+                    obj[i] = null; // Remove the key from the world
+                    player.keysCollected++; // Increment the player's key count
+                    System.out.println("Keys collected: " + player.keysCollected);
+                }
             }
         }
     }

@@ -44,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public UI ui = new UI(this);
-    public Player player = new Player(this, keyH);
+    public Player player = new Player(this, keyH); 
     public SuperObject obj[] = new SuperObject[10];
     public EventHandler eHandler = new EventHandler(this);
 
@@ -67,10 +67,8 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = 0; i < monsters.length; i++) {
             int startX = rand.nextInt(maxWorldCol) * tileSize;
             int startY = rand.nextInt(maxWorldRow) * tileSize;
-            int patrolEndX = startX + tileSize * 2;
-            int patrolEndY = startY + tileSize * 2;
 
-            monsters[i] = new Monstre(this, startX, patrolEndX, startY, patrolEndY);
+            monsters[i] = new Monstre(this, startX, startY);
         }
 
         // Initialize 5 ghosts with random starting positions
@@ -125,7 +123,7 @@ public class GamePanel extends JPanel implements Runnable {
         // Update each monster
         for (Monstre monster : monsters) {
             if (monster != null) {
-                monster.update();
+                monster.update(player);
             }
         }
 

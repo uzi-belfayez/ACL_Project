@@ -27,11 +27,30 @@ public class Fireball extends Entity {
             case "right": worldX += speed; break;
         }
 
+        // Check for collision with monsters
+        for (int i = 0; i < gp.monsters.length; i++) {
+            Monstre monster = gp.monsters[i];
+            if (monster != null && isColliding(monster)) {
+                gp.monsters[i] = null; // Remove the monster
+                gp.fireballs.remove(this); // Remove the fireball
+                System.out.println("Monster hit!");
+                break;
+            }
+        }
+
         // Remove fireball if it goes off-screen
-      /*  if (worldX < 0 || worldX > gp.worldWidth || worldY < 0 || worldY > gp.worldHeight) {
+        if (worldX < 0 || worldX > gp.worldWidth || worldY < 0 || worldY > gp.worldHeight) {
             gp.fireballs.remove(this);
-        }*/
+        }
     }
+
+    // Helper method to check collision
+    private boolean isColliding(Monstre monster) {
+        Rectangle fireballRect = new Rectangle(worldX, worldY, gp.tileSize, gp.tileSize);
+        Rectangle monsterRect = new Rectangle(monster.worldX, monster.worldY, gp.tileSize, gp.tileSize);
+        return fireballRect.intersects(monsterRect);
+    }
+
 
     public void draw(Graphics2D g2) {
         int screenX = worldX - gp.player.worldX + gp.player.screenX;

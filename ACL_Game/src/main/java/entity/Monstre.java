@@ -4,107 +4,131 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
 
 public class Monstre extends Entity {
     GamePanel gp;
-    private BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
-    private int patrolStartX, patrolEndX; // Horizontal patrol range
-    private int patrolStartY, patrolEndY; // Vertical patrol range
-    private String patrolDirection = "vertical"; // Set the patrol to vertical or horizontal
+    private BufferedImage rightSpriteSheet, leftSpriteSheet, upSpriteSheet, downSpriteSheet;
+    private BufferedImage[] rightFrames, leftFrames, upFrames, downFrames;
 
-    public Monstre(GamePanel gp, int patrolStartX, int patrolEndX, int patrolStartY, int patrolEndY) {
+    private int frameIndex = 0;
+    private int frameCounter = 0;
+
+    private boolean isMoving = false;
+    private int detectionRange = 7 * 32; // Detection range in pixels (5 tiles)
+
+    public Monstre(GamePanel gp, int initialX, int initialY) {
         this.gp = gp;
-        this.patrolStartX = patrolStartX;
-        this.patrolEndX = patrolEndX;
-        this.patrolStartY = patrolStartY;
-        this.patrolEndY = patrolEndY;
-        
+
+        worldX = initialX;
+        worldY = initialY;
+
+        solidArea = new Rectangle(8, 16, 32, 32);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+
         setDefaultValues();
-        getMonstreImage();
-        solidArea = new Rectangle(8, 16, 32, 32); // Collision area for the monster
+        loadSpriteSheets();
     }
 
     public void setDefaultValues() {
-        // Position the monster at the start of its patrol range
-        worldX = patrolStartX;
-        worldY = patrolStartY;
-        speed = 1;
-        direction = "down"; // Starting direction (adjust based on your patrol area)
+        speed = 2;
+        direction = "down";
     }
 
-    public void getMonstreImage() {
+    public void loadSpriteSheets() {
         try {
-            down1 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_down_1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_down_2.png"));
-            up1 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_up_1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_up_2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_left_1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_left_2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_right_1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/monster/skeletonlord_right_2.png"));
+            // Load movement sprite sheets
+            rightSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/monster/monsterSlashingRight.png"));
+            leftSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/monster/monsterSlashingLeft.png"));
+            upSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/monster/monsterSlashingRight.png"));
+            downSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/monster/monsterSlashingLeft.png"));
+
+            // Extract frames
+            rightFrames = extractFrames(rightSpriteSheet, 12);
+            leftFrames = extractFrames(leftSpriteSheet, 12);
+            upFrames = extractFrames(upSpriteSheet, 12);
+            downFrames = extractFrames(downSpriteSheet, 12);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void update() {
-        // Move the monster back and forth within the patrol area
-        if (patrolDirection.equals("vertical")) {
-            if (direction.equals("down") && worldY < patrolEndY) {
-                worldY += speed;
-                if (worldY >= patrolEndY) {
-                    direction = "up"; // Change direction to move up
-                }
-            } else if (direction.equals("up") && worldY > patrolStartY) {
-                worldY -= speed;
-                if (worldY <= patrolStartY) {
-                    direction = "down"; // Change direction to move down
-                }
-            }
-        } else if (patrolDirection.equals("horizontal")) {
-            if (direction.equals("right") && worldX < patrolEndX) {
-                worldX += speed;
-                if (worldX >= patrolEndX) {
-                    direction = "left"; // Change direction to move left
-                }
-            } else if (direction.equals("left") && worldX > patrolStartX) {
-                worldX -= speed;
-                if (worldX <= patrolStartX) {
-                    direction = "right"; // Change direction to move right
-                }
-            }
+    private BufferedImage[] extractFrames(BufferedImage spriteSheet, int frameCount) {
+        int frameWidth = spriteSheet.getWidth() / frameCount;
+        int frameHeight = spriteSheet.getHeight();
+        BufferedImage[] frames = new BufferedImage[frameCount];
+        for (int i = 0; i < frameCount; i++) {
+            frames[i] = spriteSheet.getSubimage(i * frameWidth, 0, frameWidth, frameHeight);
+        }
+        return frames;
+    }
+
+    public void update(Player player) {
+        // Check if the player is within detection range
+        int distanceX = Math.abs(player.worldX - this.worldX);
+        int distanceY = Math.abs(player.worldY - this.worldY);
+
+        if (distanceX <= detectionRange && distanceY <= detectionRange) {
+            isMoving = true;
+            moveTowardsPlayer(player);
+        } else {
+            isMoving = false;
         }
 
-        // Animation for the monster
-        spriteCounter++;
-        if (spriteCounter > 10) {
-            spriteNum = (spriteNum == 1) ? 2 : 1;
-            spriteCounter = 0;
+        if (isMoving) {
+            frameCounter++;
+            if (frameCounter > 2) {
+                frameIndex = (frameIndex + 1) % 12;
+                frameCounter = 0;
+            }
+        }
+    }
+
+    private void moveTowardsPlayer(Player player) {
+        if (player.worldX < this.worldX) {
+            direction = "left";
+            worldX -= speed;
+        } else if (player.worldX > this.worldX) {
+            direction = "right";
+            worldX += speed;
+        }
+
+        if (player.worldY < this.worldY) {
+            direction = "up";
+            worldY -= speed;
+        } else if (player.worldY > this.worldY) {
+            direction = "down";
+            worldY += speed;
         }
     }
 
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
+
         switch (direction) {
-            case "up":
-                image = (spriteNum == 1) ? up1 : up2;
-                break;
-            case "down":
-                image = (spriteNum == 1) ? down1 : down2;
+            case "right":
+                image = rightFrames[frameIndex];
                 break;
             case "left":
-                image = (spriteNum == 1) ? left1 : left2;
+                image = leftFrames[frameIndex];
                 break;
-            case "right":
-                image = (spriteNum == 1) ? right1 : right2;
+            case "up":
+                image = upFrames[frameIndex];
+                break;
+            case "down":
+                image = downFrames[frameIndex];
                 break;
         }
-        // Draw the monster using the constant world coordinates
-        g2.drawImage(image, worldX - gp.player.worldX + gp.screenWidth / 2 +30 , worldY - gp.player.worldY + gp.screenHeight / 2 +30 , gp.tileSize, gp.tileSize, null);
+
+        int scaledWidth = gp.tileSize * 9/5;
+        int scaledHeight = gp.tileSize * 9/5;
+
+        int drawX = worldX - gp.player.worldX + gp.player.screenX;
+        int drawY = worldY - gp.player.worldY + gp.player.screenY;
+
+        g2.drawImage(image, drawX, drawY, scaledWidth, scaledHeight, null);
     }
-    
 }

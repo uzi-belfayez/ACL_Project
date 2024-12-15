@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
@@ -17,7 +16,7 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
-    public int keysCollected = 0; // Nombre de clés collectées par le joueur
+    public int keysCollected = 0; // Number of keys collected by the player
 
     // Sprite sheets and frames for all directions
     private BufferedImage rightSpriteSheet, leftSpriteSheet, upSpriteSheet, downSpriteSheet;
@@ -35,6 +34,7 @@ public class Player extends Entity {
     private boolean isAttacking = false;
 
     public Player(GamePanel gp, KeyHandler keyH) {
+    	
         this.gp = gp;
         this.keyH = keyH;
 
@@ -106,7 +106,6 @@ public class Player extends Entity {
     }
 
     public void update() {
-        // Fireball firing logic
         if (keyH.firePressed && !isAttacking) {
             isAttacking = true;
             frameIndex = 0;
@@ -136,12 +135,35 @@ public class Player extends Entity {
                     break;
             }
 
-            // Add fireball to GamePanel's list
-            gp.fireballs.add(new entity.Fireball(gp, fireballX, fireballY, direction, fireballImage));
+            gp.fireballs.add(new Fireball(gp, fireballX, fireballY, direction, fireballImage));
             return;
         }
 
-        // Movement logic
+        if (keyH.attackPressed && !isAttacking) {
+            isAttacking = true;
+            frameIndex = 0;
+            frameCounter = 0;
+            return;
+        }
+
+        if (isAttacking) {
+            frameCounter++;
+            if (frameCounter > 0) { // Adjust for smoother animation
+                frameIndex++;
+                frameCounter = 0;
+            }
+
+            if (frameIndex >= 15) { // End attack after one animation cycle
+                isAttacking = false;
+                frameIndex = 0;
+            }
+            return;
+        }
+
+        handleMovement();
+    }
+
+    private void handleMovement() {
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             direction = keyH.upPressed ? "up" : keyH.downPressed ? "down" : keyH.leftPressed ? "left" : "right";
 
@@ -166,7 +188,7 @@ public class Player extends Entity {
             }
 
             frameCounter++;
-            if (frameCounter > 2) {
+            if (frameCounter > 10) {
                 frameIndex = (frameIndex + 1) % 15;
                 frameCounter = 0;
             }
@@ -176,19 +198,36 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
-        switch (direction) {
-            case "right":
-                image = isAttacking ? rightAttackFrames[frameIndex] : rightFrames[frameIndex];
-                break;
-            case "left":
-                image = isAttacking ? leftAttackFrames[frameIndex] : leftFrames[frameIndex];
-                break;
-            case "up":
-                image = isAttacking ? upAttackFrames[frameIndex] : upFrames[frameIndex];
-                break;
-            case "down":
-                image = isAttacking ? downAttackFrames[frameIndex] : downFrames[frameIndex];
-                break;
+        if (isAttacking) {
+            switch (direction) {
+                case "right":
+                    image = rightAttackFrames[frameIndex];
+                    break;
+                case "left":
+                    image = leftAttackFrames[frameIndex];
+                    break;
+                case "up":
+                    image = upAttackFrames[frameIndex];
+                    break;
+                case "down":
+                    image = downAttackFrames[frameIndex];
+                    break;
+            }
+        } else {
+            switch (direction) {
+                case "right":
+                    image = rightFrames[frameIndex];
+                    break;
+                case "left":
+                    image = leftFrames[frameIndex];
+                    break;
+                case "up":
+                    image = upFrames[frameIndex];
+                    break;
+                case "down":
+                    image = downFrames[frameIndex];
+                    break;
+            }
         }
 
         int scaledWidth = gp.tileSize * 2;

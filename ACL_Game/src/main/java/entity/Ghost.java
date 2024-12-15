@@ -37,8 +37,8 @@ public class Ghost extends Entity {
 
     public void getGhostImage() {
         try {
-            left1 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright2.png"));
+            left1 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostleft1.png"));
+            left2 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostleft2.png"));
             right1 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright1.png"));
             right2 = ImageIO.read(getClass().getResourceAsStream("/Ghost/ghostright2.png"));
         } catch (IOException e) {
@@ -84,6 +84,7 @@ public class Ghost extends Entity {
         } else if (direction.equals("right")) {
             image = (spriteNum == 1) ? right1 : right2;
         }
+        
 
         g2.drawImage(image, worldX - gp.player.worldX + gp.screenWidth / 2, 
                      worldY - gp.player.worldY + gp.screenHeight / 2, 

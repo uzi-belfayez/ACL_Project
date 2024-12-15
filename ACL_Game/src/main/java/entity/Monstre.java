@@ -18,6 +18,7 @@ public class Monstre extends Entity {
 
     private boolean isMoving = false;
     private int detectionRange = 7 * 32; // Detection range in pixels (5 tiles)
+    private boolean alive = true;
 
     public Monstre(GamePanel gp, int initialX, int initialY) {
         this.gp = gp;
@@ -31,6 +32,18 @@ public class Monstre extends Entity {
 
         setDefaultValues();
         loadSpriteSheets();
+    }
+
+    public Rectangle getSolidArea() {
+        return new Rectangle(worldX + solidArea.x, worldY + solidArea.y, solidArea.width, solidArea.height);
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     public void setDefaultValues() {
@@ -67,7 +80,34 @@ public class Monstre extends Entity {
     }
 
     public void update(Player player) {
-        // Check if the player is within detection range
+        if (!alive) return;
+
+        // Check if attacked by player
+        if (player.isAttacking()) {
+            Rectangle attackArea = new Rectangle(player.worldX, player.worldY, player.solidArea.width, player.solidArea.height);
+
+            switch (player.direction) {
+                case "up":
+                    attackArea.y -= gp.tileSize;
+                    break;
+                case "down":
+                    attackArea.y += gp.tileSize;
+                    break;
+                case "left":
+                    attackArea.x -= gp.tileSize;
+                    break;
+                case "right":
+                    attackArea.x += gp.tileSize;
+                    break;
+            }
+
+            if (attackArea.intersects(this.getSolidArea())) {
+                this.alive = false; // Mark the monster as not alive
+                return; // Skip further updates
+            }
+        }
+
+        // Movement logic
         int distanceX = Math.abs(player.worldX - this.worldX);
         int distanceY = Math.abs(player.worldY - this.worldY);
 
@@ -106,8 +146,9 @@ public class Monstre extends Entity {
     }
 
     public void draw(Graphics2D g2) {
-        BufferedImage image = null;
+        if (!alive) return; // Don't draw if not alive
 
+        BufferedImage image = null;
         switch (direction) {
             case "right":
                 image = rightFrames[frameIndex];
@@ -123,8 +164,8 @@ public class Monstre extends Entity {
                 break;
         }
 
-        int scaledWidth = gp.tileSize * 9/5;
-        int scaledHeight = gp.tileSize * 9/5;
+        int scaledWidth = gp.tileSize * 9 / 5;
+        int scaledHeight = gp.tileSize * 9 / 5;
 
         int drawX = worldX - gp.player.worldX + gp.player.screenX;
         int drawY = worldY - gp.player.worldY + gp.player.screenY;

@@ -143,6 +143,7 @@ public class Player extends Entity {
             isAttacking = true;
             frameIndex = 0;
             frameCounter = 0;
+            
             return;
         }
 
@@ -162,7 +163,32 @@ public class Player extends Entity {
 
         handleMovement();
     }
+ // In the Player class
+    public boolean isAttacking() {
+        return isAttacking;
+    }
 
+   /* private boolean checkAttackCollision(Monstre monster) {
+        Rectangle attackArea = new Rectangle(worldX, worldY, solidArea.width, solidArea.height);
+
+        switch (direction) {
+            case "up":
+                attackArea.y -= gp.tileSize;
+                break;
+            case "down":
+                attackArea.y += gp.tileSize;
+                break;
+            case "left":
+                attackArea.x -= gp.tileSize;
+                break;
+            case "right":
+                attackArea.x += gp.tileSize;
+                break;
+        }
+
+        return attackArea.intersects(monster.getSolidArea());
+    }*/
+    
     private void handleMovement() {
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             direction = keyH.upPressed ? "up" : keyH.downPressed ? "down" : keyH.leftPressed ? "left" : "right";

@@ -76,10 +76,10 @@ public class Player extends Entity {
             downAttackSpriteSheet = ImageIO.read(getClass().getResourceAsStream("/player/ATTACK_DOWN.png"));
 
             // Load fireball images
-            fireballUpImage = ImageIO.read(getClass().getResourceAsStream("/Player/0.png"));
-            fireballDownImage = ImageIO.read(getClass().getResourceAsStream("/Player/30.png"));
-            fireballLeftImage = ImageIO.read(getClass().getResourceAsStream("/Player/29.png"));
-            fireballRightImage = ImageIO.read(getClass().getResourceAsStream("/Player/28.png"));
+            fireballUpImage = ImageIO.read(getClass().getResourceAsStream("/player/0.png"));
+            fireballDownImage = ImageIO.read(getClass().getResourceAsStream("/player/30.png"));
+            fireballLeftImage = ImageIO.read(getClass().getResourceAsStream("/player/29.png"));
+            fireballRightImage = ImageIO.read(getClass().getResourceAsStream("/player/28.png"));
 
             // Extract movement frames
             rightFrames = extractFrames(rightSpriteSheet, 15);

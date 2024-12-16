@@ -22,7 +22,7 @@ public class TileManager {
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 		
 		getTileImage();
-		loadMap("/maps/map3.txt");
+		loadMap("/maps/map.txt");
 	}
 	
 	public void getTileImage() {
@@ -106,7 +106,7 @@ public class TileManager {
 	}
 		
 	
-	void loadMap(String filePath ) {
+	public void loadMap(String filePath ) {
 		try {
 			InputStream is = getClass().getResourceAsStream(filePath);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -133,6 +133,35 @@ public class TileManager {
 			
 		}
 	}
+	public void checkDoorCollision() {
+	    for (int i = 0; i < gp.obj.length; i++) {
+	        if (gp.obj[i] != null && gp.obj[i].name.equals("Door")) { // Assuming doors are named "Door"
+	            // Calculate player and object boundaries
+	            int playerLeft = gp.player.worldX;
+	            int playerRight = gp.player.worldX + gp.player.solidArea.width;
+	            int playerTop = gp.player.worldY;
+	            int playerBottom = gp.player.worldY + gp.player.solidArea.height;
+
+	            int objLeft = gp.obj[i].worldX;
+	            int objRight = gp.obj[i].worldX + gp.tileSize;
+	            int objTop = gp.obj[i].worldY;
+	            int objBottom = gp.obj[i].worldY + gp.tileSize;
+
+	            // Check for overlap (collision)
+	            if (playerRight > objLeft && playerLeft < objRight && playerBottom > objTop && playerTop < objBottom) {
+	                // Check if the player has enough keys
+	                if (gp.player.keysCollected >= 2) {
+	                    // Transition to a new map based on door properties
+	                    
+	                        gp.changeMap("/maps/map2.txt");
+	                    
+	                }
+	            }
+	        }
+	    }
+	}
+
+
 	
 	public void draw(Graphics2D g2) {
 		int worldCol = 0 ;

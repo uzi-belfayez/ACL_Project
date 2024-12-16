@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import object.SuperObject;
 import object.OBJ_Heart;
 import object.OBJ_Boots;
-
+import entity.Player;
 public class UI {
 
 	GamePanel gp;
@@ -41,7 +41,14 @@ public class UI {
 		//g2.drawImage(bootsImage, gp.tileSize/2, gp.tileSize/2, gp.tileSize, gp.tileSize, null);
 		drawPlayerLife(g2);
 		//g2.drawString("Movement Speed = "+gp.player.speed, 15, 30);
-		
+		String keyText = "Keys: " + gp.player.keysCollected;
+
+		// Calculate the position for bottom-right alignment
+		int textWidth = g2.getFontMetrics().stringWidth(keyText);
+		int x = gp.screenWidth - textWidth - 20; // 20px padding from the right edge
+		int y = gp.screenHeight - 20; // 20px padding from the bottom edge
+
+		g2.drawString(keyText, x, y);
 		playTime += (double)1/60;
 		g2.drawString("Time = "+dFormat.format(playTime), gp.tileSize*9, 30);
 		

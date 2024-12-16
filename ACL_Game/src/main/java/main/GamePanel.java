@@ -113,13 +113,20 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
+    public void changeMap(String mapPath) {
+        // Load the new map (you might want to update mapTileNum here)
+        tileM.loadMap(mapPath);
+
+    }
 
     public void update() {
         player.update();
-
+        
         // Check if the player collects keys
         checkKeyCollision();
-
+     
+        player.update();
+        tileM.checkDoorCollision();
         // Update each monster
         for (Monstre monster : monsters) {
             if (monster != null) {
@@ -164,6 +171,8 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
+  
+
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

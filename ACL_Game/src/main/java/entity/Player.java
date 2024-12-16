@@ -214,7 +214,7 @@ public class Player extends Entity {
             }
 
             frameCounter++;
-            if (frameCounter > 10) {
+            if (frameCounter > 2) {
                 frameIndex = (frameIndex + 1) % 15;
                 frameCounter = 0;
             }

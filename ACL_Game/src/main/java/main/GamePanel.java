@@ -58,9 +58,50 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.setFocusable(true);
     }
+    
+    public void spawnRandomKeys(int numberOfKeys) {
+        Random rand = new Random();
+        int spawnedKeys = 0;
+
+        while (spawnedKeys < numberOfKeys) {
+            int randomCol = rand.nextInt(maxWorldCol); // Random column
+            int randomRow = rand.nextInt(maxWorldRow); // Random row
+
+            // Ensure the position is walkable (not collidable)
+            if (!tileM.tile[tileM.mapTileNum[randomCol][randomRow]].collision) {
+                int worldX = randomCol * tileSize;
+                int worldY = randomRow * tileSize;
+
+                // Check if there's already an object at this position
+                boolean positionOccupied = false;
+                for (SuperObject object : obj) {
+                    if (object != null && object.worldX == worldX && object.worldY == worldY) {
+                        positionOccupied = true;
+                        break;
+                    }
+                }
+
+                // Place a key if the position is free
+                if (!positionOccupied) {
+                    for (int i = 0; i < obj.length; i++) {
+                        if (obj[i] == null) { // Find an empty spot in the obj array
+                            obj[i] = new SuperObject(); // Replace with your Key class if you have one
+                            obj[i].name = "Key";
+                            obj[i].worldX = worldX;
+                            obj[i].worldY = worldY;
+                            spawnedKeys++;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     public void setupGame() {
         aSetter.setObject();
+        spawnRandomKeys(3);
 
         // Initialize 5 monsters with random starting positions
         Random rand = new Random();
@@ -116,6 +157,14 @@ public class GamePanel extends JPanel implements Runnable {
     public void changeMap(String mapPath) {
         // Load the new map (you might want to update mapTileNum here)
         tileM.loadMap(mapPath);
+      
+        // Clear existing objects
+        for (int i = 0; i < obj.length; i++) {
+            obj[i] = null;
+        }
+
+        // Spawn new keys
+        spawnRandomKeys(5);
 
     }
 

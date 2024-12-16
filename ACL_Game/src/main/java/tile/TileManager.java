@@ -150,7 +150,7 @@ public class TileManager {
 	            // Check for overlap (collision)
 	            if (playerRight > objLeft && playerLeft < objRight && playerBottom > objTop && playerTop < objBottom) {
 	                // Check if the player has enough keys
-	                if (gp.player.keysCollected >= 2) {
+	                if (gp.player.keysCollected >= 3) {
 	                    // Transition to a new map based on door properties
 	                    
 	                        gp.changeMap("/maps/map2.txt");

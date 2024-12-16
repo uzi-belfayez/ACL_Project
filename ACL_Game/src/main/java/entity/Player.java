@@ -15,8 +15,11 @@ public class Player extends Entity {
 
     public final int screenX;
     public final int screenY;
+    private int damageCooldown = 0; // Cooldown timer for damage (in frames)
+    private static final int DAMAGE_COOLDOWN_FRAMES = 60; // Cooldown duration (1 second at 60 FPS)
 
     public int keysCollected = 0; // Number of keys collected by the player
+    public int life = 6; // Player's life count
 
     // Sprite sheets and frames for all directions
     private BufferedImage rightSpriteSheet, leftSpriteSheet, upSpriteSheet, downSpriteSheet;
@@ -52,7 +55,7 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 23;
-        speed = 4;
+        speed = 2;
         direction = "down";
         maxLife = 6;
         life = maxLife;
@@ -106,6 +109,7 @@ public class Player extends Entity {
     }
 
     public void update() {
+    	handleMonsterCollision();
         if (keyH.firePressed && !isAttacking) {
             isAttacking = true;
             frameIndex = 0;
@@ -166,6 +170,32 @@ public class Player extends Entity {
  // In the Player class
     public boolean isAttacking() {
         return isAttacking;
+    }
+    
+    private void handleMonsterCollision() {
+        for (Monstre monster : gp.monsters) {
+            if (monster != null && isCollidingWithMonster(monster)) {
+                // Check if cooldown is active
+                if (damageCooldown == 0) {
+                    life--;
+                    System.out.println("Player hit! Lives remaining: " + life);
+
+                    if (life <= 0) {
+                        System.out.println("Game Over!");
+                        // Handle game-over logic, e.g., restarting the level or showing a game-over screen
+                    }
+
+                    // Reset the cooldown timer
+                    damageCooldown = DAMAGE_COOLDOWN_FRAMES;
+                }
+            }
+        }
+    }
+
+    private boolean isCollidingWithMonster(Monstre monster) {
+        Rectangle playerBounds = new Rectangle(worldX, worldY, solidArea.width, solidArea.height);
+        Rectangle monsterBounds = new Rectangle(monster.worldX, monster.worldY, gp.tileSize, gp.tileSize);
+        return playerBounds.intersects(monsterBounds);
     }
 
    /* private boolean checkAttackCollision(Monstre monster) {

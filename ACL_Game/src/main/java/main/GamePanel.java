@@ -155,16 +155,15 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     public void changeMap(String mapPath) {
-        // Load the new map (you might want to update mapTileNum here)
-        tileM.loadMap(mapPath);
       
+        tileM.loadMap(mapPath);
+  
         // Clear existing objects
         for (int i = 0; i < obj.length; i++) {
             obj[i] = null;
         }
-
-        // Spawn new keys
-        spawnRandomKeys(5);
+        
+        aSetter.setObject();
 
     }
 
@@ -194,6 +193,7 @@ public class GamePanel extends JPanel implements Runnable {
                 ghost.update();
             }
         }
+        
     }
 
     // Method to check collisions with keys
@@ -257,7 +257,9 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         ui.draw(g2);
-
+        if (player.keysCollected >= 6)  {
+        	ui.drawWinScreen(g2);
+        }
         g2.dispose();
     }
 }

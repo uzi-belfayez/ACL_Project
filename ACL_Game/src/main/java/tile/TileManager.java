@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.UtilityTool;
-
+import main.UI;
 import java.awt.image.BufferedImage;
 public class TileManager {
 	GamePanel gp;
@@ -150,12 +150,18 @@ public class TileManager {
 	            // Check for overlap (collision)
 	            if (playerRight > objLeft && playerLeft < objRight && playerBottom > objTop && playerTop < objBottom) {
 	                // Check if the player has enough keys
-	                if (gp.player.keysCollected >= 3) {
+	                if (gp.player.keysCollected >= 2) {
 	                    // Transition to a new map based on door properties
 	                    
-	                        gp.changeMap("/maps/map2.txt");
+	                        gp.changeMap("/maps/map2.txt");}
+	                        if (gp.player.keysCollected >= 4) {
+	    	                    // Transition to a new map based on door properties
+	    	                    
+	    	                        gp.changeMap("/maps/map3.txt");
+	                 
 	                    
 	                }
+	                       
 	            }
 	        }
 	    }

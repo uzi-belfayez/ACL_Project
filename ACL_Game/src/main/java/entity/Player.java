@@ -16,7 +16,7 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
     private int damageCooldown = 0; // Cooldown timer for damage (in frames)
-    private static final int DAMAGE_COOLDOWN_FRAMES = 60; // Cooldown duration (1 second at 60 FPS)
+    private static final int DAMAGE_COOLDOWN_FRAMES = 2; // Cooldown duration (1 second at 60 FPS)
 
     public int keysCollected = 0; // Number of keys collected by the player
     public int life = 6; // Player's life count
@@ -109,6 +109,7 @@ public class Player extends Entity {
     }
 
     public void update() {
+    
     	handleMonsterCollision();
         if (keyH.firePressed && !isAttacking) {
             isAttacking = true;

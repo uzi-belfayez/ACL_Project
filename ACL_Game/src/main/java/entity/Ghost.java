@@ -12,8 +12,9 @@ import main.GamePanel;
 
 public class Ghost extends Entity {
     GamePanel gp;
-    private BufferedImage left1, left2, right1, right2;
-    private int patrolStartX, patrolEndX; 
+    public BufferedImage left1, left2, right1, right2;
+    public int patrolStartX;
+	public int patrolEndX; 
 
     public Ghost(GamePanel gp) {
         this.gp = gp;

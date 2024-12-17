@@ -260,6 +260,9 @@ public class GamePanel extends JPanel implements Runnable {
         if (player.keysCollected >= 6)  {
         	ui.drawWinScreen(g2);
         }
+        if (player.life==0) {
+        	ui.drawloseScreen(g2);
+        }
         g2.dispose();
     }
 }

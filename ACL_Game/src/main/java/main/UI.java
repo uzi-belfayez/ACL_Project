@@ -91,7 +91,23 @@ public void drawPlayerLife(Graphics2D g2) {
 		x += gp.tileSize;
 	}
 }
-
+public void drawloseScreen(Graphics2D g2) {
+	// Set the font and color for the "You Win" message
+	Font winFont = new Font("Arial", Font.BOLD, 80);
+	g2.setFont(winFont);
+	g2.setColor(Color.RED);
+	
+	// Define the message
+	String winMessage = "GAME OVER!";
+	
+	// Calculate the position to center the text
+	int textWidth = g2.getFontMetrics().stringWidth(winMessage);
+	int x = (gp.screenWidth - textWidth) / 2;
+	int y = gp.screenHeight / 2;
+	
+	// Draw the message
+	g2.drawString(winMessage, x, y);
+}
 public void drawWinScreen(Graphics2D g2) {
 	// Set the font and color for the "You Win" message
 	Font winFont = new Font("Arial", Font.BOLD, 80);
